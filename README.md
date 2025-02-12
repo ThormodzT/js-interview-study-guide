@@ -63,6 +63,88 @@ function example() {
 }
 ```
 
+# Main Difference Between Arrow and Normal Functions in JavaScript
+
+The **main difference** between **arrow functions** (`=>`) and **normal functions** (`function`) in JavaScript is how they handle the **`this`** keyword.
+
+## 🔹 Key Differences
+
+| Feature            | Arrow Function (`=>`)                         | Normal Function (`function`)                |
+|--------------------|--------------------------------|--------------------------------|
+| **`this` Binding** | Does **not** have its own `this`, it inherits from its surrounding scope (lexical `this`). | Has its own `this`, which changes based on how the function is called. |
+| **`arguments` Object** | Does **not** have `arguments`, must use rest parameters (`...args`). | Has access to the `arguments` object. |
+| **Usage as Methods** | Not suitable for object methods, since `this` does not refer to the object. | Works well as an object method (`this` refers to the object). |
+| **Can Be Used as Constructor?** | ❌ No (`new` keyword will throw an error). | ✅ Yes, can be used as a constructor. |
+| **Implicit Return** | ✅ Can return values without `{}` when using a single expression. | ❌ Requires `return` for returning values. |
+
+---
+
+## 🔹 Example 1: `this` in Arrow vs Normal Functions
+
+```js
+const obj = {
+  name: "Alice",
+  arrowFn: () => console.log(this.name),  // ❌ `this` refers to the outer scope (not `obj`)
+  normalFn() {
+    console.log(this.name);  // ✅ `this` refers to `obj`
+  }
+};
+
+obj.arrowFn();  // Output: undefined (or error in strict mode)
+obj.normalFn(); // Output: Alice
+```
+
+---
+
+## 🔹 Example 2: `arguments` in Arrow vs Normal Functions
+
+```js
+function normalFunction() {
+  console.log(arguments);  // ✅ Available
+}
+
+const arrowFunction = () => {
+  console.log(arguments);  // ❌ Error: `arguments` is not defined
+};
+
+normalFunction(1, 2, 3);  // Output: [Arguments] { '0': 1, '1': 2, '2': 3 }
+arrowFunction(1, 2, 3);   // Throws an error
+```
+
+---
+
+## 🔹 Example 3: Constructor Function (Arrow ❌ vs Normal ✅)
+
+```js
+function Person(name) {
+  this.name = name;
+}
+
+const person = new Person("Alice"); // ✅ Works
+
+const ArrowPerson = (name) => {
+  this.name = name;
+};
+
+const arrowPerson = new ArrowPerson("Bob"); // ❌ TypeError: ArrowPerson is not a constructor
+```
+
+---
+
+## 🔹 When to Use Each?
+
+✅ **Use arrow functions** when:
+- You need **lexical `this`** (e.g., callbacks, event handlers, array methods).
+- You don’t need `arguments` or `new`.
+- You want a concise one-liner function.
+
+✅ **Use normal functions** when:
+- You need **dynamic `this`** (e.g., methods inside objects or classes).
+- You need the `arguments` object.
+- You need a **constructor function**.
+
+---
+
 **Scope Chain:** When a variable is accessed, JavaScript looks for it in the local scope first, then moves up to parent scopes until it reaches the global scope.
 
 ## 7. What is `"use strict"`?
@@ -706,7 +788,5 @@ payment.pay(100); // "Paid $100 using PayPal."
 | Need to allow objects to react to events  | **Observer**        |
 | Need to optimize object access            | **Proxy**           |
 
-### Conclusion
 
-Design patterns help solve recurring problems **efficiently**. Choosing the right pattern **improves maintainability, flexibility, and scalability** of your code. Understanding these patterns will help you **write better software**!
 
